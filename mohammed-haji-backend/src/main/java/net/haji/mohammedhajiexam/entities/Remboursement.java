@@ -1,0 +1,4 @@
+package net.haji.mohammedhajiexam.entities;
+
+public class Remboursement {
+}
