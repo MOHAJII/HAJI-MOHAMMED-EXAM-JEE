@@ -1,0 +1,155 @@
+<div class="container mt-4">
+    <!-- Filters and Add New Credit Button -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <select class="form-select" [(ngModel)]="selectedStatus" (change)="loadCredits()">
+                <option value="">Tous les statuts</option>
+                <option value="EN_COURS">En cours</option>
+                <option value="ACCEPTE">Accepté</option>
+                <option value="REJETE">Rejeté</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select" [(ngModel)]="selectedClientId" (change)="loadCredits()">
+                <option value="">Tous les clients</option>
+                <option *ngFor="let client of clients" [value]="client.id">
+                    {{client.nom}}
+                </option>
+            </select>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-primary" (click)="switchMode('new')" *ngIf="mode === 'list'">
+                Nouveau Crédit
+            </button>
+        </div>
+    </div>
+
+    <!-- Credits List -->
+    <div class="card" *ngIf="mode === 'list'">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Liste des Crédits</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date Demande</th>
+                            <th>Client</th>
+                            <th>Montant</th>
+                            <th>Durée (mois)</th>
+                            <th>Taux</th>
+                            <th>Statut</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let credit of credits">
+                            <td>{{credit.id}}</td>
+                            <td>{{credit.dateDemande}}</td>
+                            <td>{{credit.clientId}}</td>
+                            <td>{{credit.montant}} DH</td>
+                            <td>{{credit.dureeRemboursement}}</td>
+                            <td>{{credit.tauxInteret}}%</td>
+                            <td>
+                                <span class="badge" [ngClass]="{
+                                    'bg-warning': credit.statut === 'EN_COURS',
+                                    'bg-success': credit.statut === 'ACCEPTE',
+                                    'bg-danger': credit.statut === 'REJETE'
+                                }">
+                                    {{credit.statut}}
+                                </span>
+                            </td>
+                            <td>{{credit.typeBien}}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-success me-1"
+                                            (click)="processCredit(credit.id!, 'ACCEPTE')"
+                                            *ngIf="credit.statut === 'EN_COURS'">
+                                        Accepter
+                                    </button>
+                                    <button class="btn btn-sm btn-danger me-1"
+                                            (click)="processCredit(credit.id!, 'REJETE')"
+                                            *ngIf="credit.statut === 'EN_COURS'">
+                                        Rejeter
+                                    </button>
+                                    <button class="btn btn-sm btn-info"
+                                            (click)="calculateMensualite(credit.id!)"
+                                            *ngIf="credit.statut === 'ACCEPTE'">
+                                        Calculer Mensualité
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Credit Form -->
+    <div class="card" *ngIf="mode === 'new'">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Nouveau Crédit</h5>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="saveCredit()">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Client</label>
+                        <select class="form-select" [(ngModel)]="newCredit.clientId" name="clientId" required>
+                            <option value="">Sélectionner un client</option>
+                            <option *ngFor="let client of clients" [value]="client.id">
+                                {{client.nom}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Type de Bien</label>
+                        <select class="form-select" [(ngModel)]="newCredit.typeBien" name="typeBien" required>
+                            <option value="APPARTEMENT">Appartement</option>
+                            <option value="MAISON">Maison</option>
+                            <option value="VILLA">Villa</option>
+                            <option value="TERRAIN">Terrain</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Montant (DH)</label>
+                        <input type="number" class="form-control" [(ngModel)]="newCredit.montant" name="montant" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Durée (mois)</label>
+                        <input type="number" class="form-control" [(ngModel)]="newCredit.dureeRemboursement" name="duree" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Taux d'intérêt (%)</label>
+                        <input type="number" class="form-control" [(ngModel)]="newCredit.tauxInteret" name="taux" required>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <button type="button" class="btn btn-secondary" (click)="switchMode('list')">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mensualité Modal -->
+    <div class="modal fade" id="mensualiteModal" tabindex="-1" *ngIf="mensualite > 0">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Calcul de la Mensualité</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="lead text-center">
+                        Mensualité: {{mensualite}} DH
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

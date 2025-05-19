@@ -1,0 +1,98 @@
+<div class="container mt-4">
+    <!-- Search and Add New Client Button -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="text" class="form-control" [(ngModel)]="searchKeyword" placeholder="Search clients...">
+                <button class="btn btn-outline-secondary" (click)="searchClients()">Search</button>
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-primary" (click)="switchMode('new')" *ngIf="mode === 'list'">
+                Add New Client
+            </button>
+        </div>
+    </div>
+
+    <!-- Client List -->
+    <div class="card" *ngIf="mode === 'list'">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Client List</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let client of clients">
+                            <td>{{client.id}}</td>
+                            <td>{{client.nom}}</td>
+                            <td>{{client.email}}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info me-2" (click)="editClient(client)">
+                                    Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger" (click)="deleteClient(client.id!)">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Client Form -->
+    <div class="card" *ngIf="mode === 'new'">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Add New Client</h5>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="saveClient()">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" [(ngModel)]="newClient.nom" name="nom" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" [(ngModel)]="newClient.email" name="email" required>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" (click)="switchMode('list')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Client Form -->
+    <div class="card" *ngIf="mode === 'edit' && selectedClient">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Edit Client</h5>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="saveClient()">
+                <div class="mb-3">
+                    <label for="editName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="editName" [(ngModel)]="selectedClient.nom" name="nom" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="editEmail" [(ngModel)]="selectedClient.email" name="email" required>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-secondary" (click)="switchMode('list')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

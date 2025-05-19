@@ -1,0 +1,131 @@
+<div class="container-fluid">
+    <!-- Statistiques générales -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-credit-card-fill me-2"></i>
+                        Total des Crédits
+                    </h5>
+                    <h2 class="card-text">{{totalCredits}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-cash-coin me-2"></i>
+                        Montant Total
+                    </h5>
+                    <h2 class="card-text">{{totalAmount}} DH</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-percent me-2"></i>
+                        Taux Moyen
+                    </h5>
+                    <h2 class="card-text">{{averageRate }}%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribution des crédits -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-pie-chart-fill me-2"></i>Distribution des Crédits</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            En cours
+                            <span class="badge bg-warning rounded-pill">{{creditsByStatus['EN_COURS']}}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Acceptés
+                            <span class="badge bg-success rounded-pill">{{creditsByStatus['ACCEPTE']}}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Rejetés
+                            <span class="badge bg-danger rounded-pill">{{creditsByStatus['REJETE']}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Derniers clients -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-people-fill me-2"></i>Derniers Clients</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item" *ngFor="let client of recentClients">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{client.nom}}</h6>
+                                <small>ID: {{client.id}}</small>
+                            </div>
+                            <p class="mb-1">{{client.email}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Derniers crédits -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-clock-history me-2"></i>Derniers Crédits</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Montant</th>
+                                    <th>Durée</th>
+                                    <th>Taux</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let credit of recentCredits">
+                                    <td>{{credit.id}}</td>
+                                    <td>{{credit.dateDemande}}</td>
+                                    <td>{{credit.montant}} DH</td>
+                                    <td>{{credit.dureeRemboursement}} mois</td>
+                                    <td>{{credit.tauxInteret}}%</td>
+                                    <td>
+                                        <span class="badge"
+                                              [ngClass]="{
+                                                'bg-warning': credit.statut === 'EN_COURS',
+                                                'bg-success': credit.statut === 'ACCEPTE',
+                                                'bg-danger': credit.statut === 'REJETE'
+                                              }">
+                                            {{credit.statut}}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

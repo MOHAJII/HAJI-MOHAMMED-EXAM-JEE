@@ -18,9 +18,9 @@ export interface Credit {
     tauxInteret: number;
     clientId: number;
     discriminator: string;
-    typeBien: TypeBien;
+    typeBien: string;
 }
 
 export interface CreditDecision {
-    decision: StatutCredit;
+    decision: string;
 }
