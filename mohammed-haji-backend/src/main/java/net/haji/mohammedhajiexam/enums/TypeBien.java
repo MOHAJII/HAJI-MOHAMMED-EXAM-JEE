@@ -3,6 +3,6 @@ package net.haji.mohammedhajiexam.enums;
 
 
 
-enum TypeBien {
+public enum TypeBien {
     APPARTEMENT, MAISON, LOCAL_COMMERCIAL
 }

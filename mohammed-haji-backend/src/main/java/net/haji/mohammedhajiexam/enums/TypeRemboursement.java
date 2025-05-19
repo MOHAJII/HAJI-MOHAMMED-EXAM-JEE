@@ -1,6 +1,6 @@
 package net.haji.mohammedhajiexam.enums;
 
 
-enum TypeRemboursement {
+public enum TypeRemboursement {
     MENSUALITE, REMBOURSEMENT_ANTICIPE
 }

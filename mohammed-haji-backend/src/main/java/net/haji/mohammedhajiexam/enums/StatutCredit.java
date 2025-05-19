@@ -1,6 +1,6 @@
 package net.haji.mohammedhajiexam.enums;
 
-enum StatutCredit {
+public enum StatutCredit {
     EN_COURS, ACCEPTE, REJETE
 }
 
